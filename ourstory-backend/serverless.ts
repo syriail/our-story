@@ -113,7 +113,7 @@ const serverlessConfiguration: AWS = {
       port: '4569'
     },
     'serverless-offline':{
-      port: 3003
+      port: 3000
     },
     dynamodb:{
       start:{
