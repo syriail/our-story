@@ -14,6 +14,16 @@ Stories are collected in a context of projects carried out by organizations inte
 
 All stories collected in a context of a project are organized in collection. Hakawati Collection is an example of such project in which more than 400 stories were collected.
 
+# Features
+
+The archive has the following main features:
+
+- **Expandable:** Collections and stories could be added dynamically.
+- **Flexible:** Collection-specific fields can be defined dynamically, so these fields appear only in stories which belong to this collection.
+- **Multi-lingual:** A new language could be added with a minimum technical efforts.
+- **Semantically Searchable:** Archive supports semantic search according to each language's characterstics such as plural recognition in Arabic.
+- **Role-based Functionalities:** Users can perform actions based on their role in the system and their role in each collection.
+
 # Summary For Udacity Review
 
 ## APIs Summary
@@ -31,23 +41,6 @@ It fetches all the collection which the user is the manager of or editor
   - locale: The user locale to fetch information accordingly
 
 - Returns: List of collections `{ collections: []}`
-
-### Create Collection
-
-- REST API: POST /collections
-
-- Athorized Roles: Collection Manger
-
-- Body Params:
-
-  - defaultLocale: The default language of the collection
-  - name: Collection's name
-  - description?: Collection's description
-  - managerId: Manager's id
-  - editors?: List of editors' ids `editors:[string]`
-  - tags?: List of slugs of collection-specific fields `tags:[{slug, name}]`
-
-- Returns: The newely added collectoin
 
 ### Create Story
 
@@ -73,15 +66,107 @@ Add a story to a collection in Collection's default language
   - storytellerResidency?: The residency of the story teller
   - storyCollectorName?: The name of the person who collected the story
 
-# Features
+### Create Story
 
-The archive has the following main features:
+Add a story to a collection in Collection's default language
 
-- **Expandable:** Collections and stories could be added dynamically.
-- **Flexible:** Collection-specific fields can be defined dynamically, so these fields appear only in stories which belong to this collection.
-- **Multi-lingual:** A new language could be added with a minimum technical efforts.
-- **Semantically Searchable:** Archive supports semantic search according to each language's characterstics such as plural recognition in Arabic.
-- **Role-based Functionalities:** Users can perform actions based on their role in the system and their role in each collection.
+- REST API: POST /stories
+
+- Authorized Roles: Collection Manager, Collection Editor
+
+- Body Params:
+
+  - collectionId: Collection id
+  - defaultLocale: The default language in which the collection was originally created
+  - storyType: The type of the story, picked from pre-defined list
+  - storyTitle: Story's title in user's language if available
+  - storyTellerAge?: The age of story teller
+  - storyTellerGender?: The gender of the story teller
+  - tags?: Tags values for this story `tags:[{id, slug, name, tagValue}]`
+  - storyAbstraction?: The abstraction of the story
+  - storyTranscript?: The transcript of the story
+  - storyTellerName?: The name of the story teller
+  - storyTellerPlaceOfOrigin?: Place of origin of the story teller
+  - storytellerResidency?: The residency of the story teller
+  - storyCollectorName?: The name of the person who collected the story
+
+### Update Stroy
+
+Add a story to a collection in Collection's default language
+
+- REST API: PATCH /stories/{storyId}
+
+- Authorized Roles: Collection Manager, Collection Editor
+
+The body and return response is identical to Create Story
+
+### Delete Story
+
+Delete the given story with all available translations
+
+- REST API: DELETE /stories/{storyId}
+
+- Authorized Roles: Collection Manager, Collection Editor
+
+### Get Upload Signed Url
+
+Gets a signed url to upload a media file to S3 media bucket
+
+- REST API: GET /uploadUrl/{storyId}
+
+- Authorized Roles: Collection Manager, Collection Editor
+
+- Params:
+
+  - storyId: Story id
+
+## Testing
+
+The backend is ready to be unit and integration tested without the need of a Frontend
+
+To test the backend and make sure it meets the requirements, please do the following steps:
+
+- Checkout the project from the repository
+- Then `cd our-story/ourstory-backend`
+- Run `npm i --save`to install dependencies
+- Add a file named `stage.ts` which is used by `serverless.ts` to specify the `profile`and `stage``
+  The file should be like:
+
+  ```
+  const stage = {
+    stage:'dev',
+    profile: 'udacity'
+  }
+  export default stage
+
+  ```
+
+### Unit Test
+
+- In a seperate terminal run `sls dynamodb start`. This will start local dynamodb and seed the initial data
+- In current terminal run `npm test`
+
+### Integration Test
+
+The folder ourstory-backend contains Postman collection named `Our-Story.postman_collection.json`.
+This collection contains all sort of required tests
+
+- Test create, update and delete story
+- Get upload url and upload file to S3 bucket
+- Test get colections according to user id
+- Test request validation
+- Test authorization
+
+The collection contains many tokens to test with different user id, different user's role and finally to test marlformed token.
+
+To run Postman collection:
+
+- In terminal `cd ourstory-backend`
+- Run `sls offline start`. This will start dynamodb local, seed the initial data in the tables, start S3 local service and create the required bucket, and start the server
+- Import the collection in postman
+- Run tests in at the collection level or Run each request individually
+
+> The following sections are intended to be a full documentation of the system.
 
 # System Parts
 
@@ -217,6 +302,24 @@ Add a story to a collection in Collection's default language
   - storyTellerPlaceOfOrigin?: Place of origin of the story teller
   - storytellerResidency?: The residency of the story teller
   - storyCollectorName?: The name of the person who collected the story
+
+## Update Stroy
+
+Add a story to a collection in Collection's default language
+
+- REST API: PATCH /stories/{storyId}
+
+- Authorized Roles: Collection Manager, Collection Editor
+
+The body and return response is identical to Create Story
+
+## Delete Story
+
+Delete the given story with all available translations
+
+- REST API: DELETE /stories/{storyId}
+
+- Authorized Roles: Collection Manager, Collection Editor
 
 ## Get Story Details
 
