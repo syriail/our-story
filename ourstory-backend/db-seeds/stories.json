@@ -1,0 +1,26 @@
+[
+    {
+        "id": "21",
+        "collectionId":"2",
+        "defaultLocale": "en",
+        "storyType": "HISTORY",
+        "availableTranslations":[],
+        "storyTellerAge": 23,
+        "storyTellerGender": "UNSPECIFIED"
+    },
+    {
+        "id": "22",
+        "collectionId":"2",
+        "defaultLocale": "en",
+        "storyType": "FAIRY",
+        "availableTranslations":[],
+        "storyTellerGender": "FEMALE"
+    },
+    {
+        "id": "23",
+        "collectionId":"2",
+        "defaultLocale": "en",
+        "storyType": "FOLK_SONG",
+        "availableTranslations":[]
+    }
+]

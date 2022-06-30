@@ -1,0 +1,23 @@
+[
+    {
+        "storyId":"21",
+        "tagId":"2#more_info",
+        "locale":"en",
+        "name":"More Info",
+        "value":"This story has been added in summer"
+    },
+    {
+        "storyId":"22",
+        "tagId":"2#more_info",
+        "locale":"en",
+        "name":"More Info",
+        "value":"It was pretty relaxing to work on this one"
+    },
+    {
+        "storyId":"23",
+        "tagId":"2#more_info",
+        "locale":"en",
+        "name":"More Info",
+        "value":"Was boring!"
+    }
+]
