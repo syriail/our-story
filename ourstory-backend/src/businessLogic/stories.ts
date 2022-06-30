@@ -4,17 +4,21 @@ import {Story, TagValue, UploadAttachmentData, MediaFormat } from "../models";
 import * as uuid from 'uuid'
 import CreateStoryRequest from '../requests/CreateStoryRequest';
 import BucketAccess from "../dataLayer/bucketAcess";
+import {createLogger} from '../libs/logger'
 
 const storyAccess = new StoryAccess()
 const collectionAccess = new CollectionAccess()
 const bucketAcess = new BucketAccess()
 
-export const getStoriesByCollection = async(collectionId:string, locale:string):Promise<Story[]> =>{
+export const getStoriesByCollection = async(collectionId:string, locale:string, requestId: string):Promise<Story[]> =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'getStoriesByCollection')
     let stories: Story[] = []
-    const baseStories = await storyAccess.getStoriesByCollectionId(collectionId)
+    //Get base stories
+    const baseStories = await storyAccess.getStoriesByCollectionId(collectionId, requestId)
+    //For each base story, get it's translation of the given locale to build full story
     for(const baseStory of baseStories){
         const targetLocale = baseStory.availableTranslations.includes(locale) ? locale : baseStory.defaultLocale
-        const translation = await storyAccess.getStroyTranslation(baseStory.id, targetLocale)
+        const translation = await storyAccess.getStroyTranslation(baseStory.id, targetLocale, requestId)
         let story: Story = {
             id: baseStory.id,
             collectionId: baseStory.collectionId,
@@ -34,14 +38,21 @@ export const getStoriesByCollection = async(collectionId:string, locale:string):
         if(translation.storyCollectorName) story.storyCollectorName = translation.storyCollectorName
         stories.push(story)
     }
+    logger.info(`Return ${stories.length} story`)
     return stories
 }
 
-export const getStoryDetails = async(storyId: string, locale: string): Promise<Story> =>{
-    const baseStory = await storyAccess.getStoryById(storyId)
+export const getStoryDetails = async(storyId: string, locale: string, requestId: string): Promise<Story> =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'getStoryDetails')
+    logger.info(`Fetch and build full story id: ${storyId}`)
+    //Get base story
+    const baseStory = await storyAccess.getStoryById(storyId, requestId)
+    //If the story does not have a translation for the given locale then use the default locale
     const targetLocale = baseStory.availableTranslations.includes(locale) ? locale : baseStory.defaultLocale
-    const translation = await storyAccess.getStroyTranslation(storyId, targetLocale)
-    const tags = await storyAccess.getStoryTagValues(storyId, targetLocale)
+    //Get story translation
+    const translation = await storyAccess.getStroyTranslation(storyId, targetLocale, requestId)
+    //Get tags values
+    const tags = await storyAccess.getStoryTagValues(storyId, targetLocale, requestId)
     let story: Story = {
         id: baseStory.id,
         collectionId: baseStory.collectionId,
@@ -51,7 +62,7 @@ export const getStoryDetails = async(storyId: string, locale: string): Promise<S
         storyType: baseStory.storyType,
         tags
     }
-    //TODO spread baseStory instead
+    //Build the full story
     if(baseStory.storyTellerAge) story.storyTellerAge = baseStory.storyTellerAge
     if(baseStory.storyTellerGender) story.storyTellerGender = baseStory.storyTellerGender
     if(baseStory.mediaFiles) story.mediaFiles = baseStory.mediaFiles
@@ -64,23 +75,29 @@ export const getStoryDetails = async(storyId: string, locale: string): Promise<S
 
     return story
 }
-export const createStory = async(request: CreateStoryRequest): Promise<Story>=>{
+export const createStory = async(request: CreateStoryRequest, requestId: string): Promise<Story>=>{
+    const logger = createLogger(requestId, 'businessLogic', 'createStory')
     const id = uuid.v4()
+    logger.info('Build tag values')
     const story = await buildStoryFromRequest(id, request)
-
-    await storyAccess.createStory(story)
+    logger.info('Create the story in DB')
+    await storyAccess.createStory(story, requestId)
     return story
 }
 
-export const updateStory = async(storyId: string, request: CreateStoryRequest): Promise<Story> =>{
+export const updateStory = async(storyId: string, request: CreateStoryRequest, requestId: string): Promise<Story> =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'updateStory')
+    logger.info(`Update story ${storyId}`)
     const story = await buildStoryFromRequest(storyId, request)
-    await storyAccess.updateStory(story)
-    return getStoryDetails(storyId, story.defaultLocale)
+    await storyAccess.updateStory(story, requestId)
+    return getStoryDetails(storyId, story.defaultLocale, requestId)
 
 }
 
-export const deleteStory = async(storyId: string) =>{
-    await storyAccess.deleteStory(storyId)
+export const deleteStory = async(storyId: string, requestId: string) =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'deleteStory')
+    logger.info(`Delete story ${storyId}`)
+    await storyAccess.deleteStory(storyId, requestId)
 }
 
 const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest): Promise<Story> =>{
@@ -110,12 +127,14 @@ const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest)
 /**
  * Get signed upload url for TODO image
  * @param storyId The story id to which the media belog
- * @param mediaFormat The format of the media, VIDEO, AUDIO or IMAGE
+ * @param mediaFromat The format of the media, VIDEO, AUDIO or IMAGE
  * @param fileExtension The extension of the file to be uploaded like mp4, png ..etc
  *
  * @returns singned url as string and the path in the bucket
  */
- export const getUploadUrls = (storyId: string, mediaFromat: MediaFormat, fileExtension: string): UploadAttachmentData=>{
+ export const getUploadUrls = (storyId: string, mediaFromat: MediaFormat, fileExtension: string, requestId: string): UploadAttachmentData=>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'getUploadUrls')
+    
     const randomNumber = Math.floor(Math.random() * 100);
     let key = `${storyId}_${randomNumber}.${fileExtension}`
     switch(mediaFromat){
@@ -129,6 +148,7 @@ const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest)
         key = 'image/' + key
         break
     }
+    logger.info(`Get upload url of key: ${key}`)
     const urls: UploadAttachmentData = bucketAcess.getMediaUploadUrls(key)
 
     return urls

@@ -1,8 +1,10 @@
 import * as AWSXRay from "aws-xray-sdk"
 import {StoryAccess} from '../storiesAccess'
 import {Gender, Story, StoryType, TagValue, TranslableType} from '../../models'
+import * as uuid from 'uuid'
 const seededStories = require('../../../db-seeds/stories.json')
 const seededTranslations = require('../../../db-seeds/translations.json')
+
 AWSXRay.setContextMissingStrategy("IGNORE_ERROR")
 
 const storiesAccess  = new StoryAccess()
@@ -10,35 +12,40 @@ const storiesAccess  = new StoryAccess()
 
 describe('Data Access getStoriesByCollectionId', ()=>{
     it('Should fetch correct base stories of collectionId 2', async()=>{
+        const requestId = uuid.v4()
         const collectionId = '2'
         const expectedStories = seededStories.filter(s => s.collectionId === collectionId)
-        const receivedStories = await storiesAccess.getStoriesByCollectionId(collectionId)
+        const receivedStories = await storiesAccess.getStoriesByCollectionId(collectionId, requestId)
         expect(receivedStories).toStrictEqual(expectedStories)
     })
     it('Should return []', async()=>{
+        const requestId = uuid.v4()
         const collectionId = '852'
         const expectedStories = []
-        const receivedStories = await storiesAccess.getStoriesByCollectionId(collectionId)
+        const receivedStories = await storiesAccess.getStoriesByCollectionId(collectionId,requestId)
         expect(receivedStories).toStrictEqual(expectedStories)
     })
 })
 describe('Data Access getStroyTranslation', ()=>{
     it('Should return the correct story Translation', async()=>{
+        const requestId = uuid.v4()
         const storyId = '21'
         const locale = 'en'
         const expectedTranslation = seededTranslations.find(t => t.id === storyId && t.locale === locale)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
         expect(receivedTranslation).toStrictEqual(expectedTranslation)
     })
     it('Should return undefined', async()=>{
+        const requestId = uuid.v4()
         const storyId = '21963'
         const locale = 'en'
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
         expect(receivedTranslation).toBeUndefined()
     })
 })
 
 describe('Data Access createStory', ()=>{
+    const requestId = uuid.v4()
     it('Should create a story with all optional fields, translation and tags successfully', async()=>{
         const storyId = '789456'
         const collectionId = '1'
@@ -76,10 +83,10 @@ describe('Data Access createStory', ()=>{
                 }
             ]
         }
-        await storiesAccess.createStory(story)
-        const receivedBaseStroy = await storiesAccess.getStoryById(storyId)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
-        const receivedTagValues = await storiesAccess.getStoryTagValues(storyId, locale)
+        await storiesAccess.createStory(story, requestId)
+        const receivedBaseStroy = await storiesAccess.getStoryById(storyId, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
+        const receivedTagValues = await storiesAccess.getStoryTagValues(storyId, locale, requestId)
 
         const expectedBaseStory = {
             id: storyId,
@@ -124,6 +131,7 @@ describe('Data Access createStory', ()=>{
         expect(receivedTagValues).toStrictEqual(expectedTagValues)
     })
     it('Should create a story with only mandatory fields, translation and no tags successfully', async()=>{
+        const requestId = uuid.v4()
         const storyId = '789457'
         const collectionId = '1'
         const locale = 'ar'
@@ -136,9 +144,9 @@ describe('Data Access createStory', ()=>{
             availableTranslations:[],
             tags:[]
         }
-        await storiesAccess.createStory(story)
-        const receivedBaseStroy = await storiesAccess.getStoryById(storyId)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        await storiesAccess.createStory(story, requestId)
+        const receivedBaseStroy = await storiesAccess.getStoryById(storyId, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
 
         const expectedBaseStory = {
             id: storyId,
@@ -173,12 +181,12 @@ describe('Data Access updateStory', ()=>{
         tags:[]
     }
     it('Should update story type successfully', async()=>{
+        const requestId = uuid.v4()
         
-        
-        await storiesAccess.createStory(story)
+        await storiesAccess.createStory(story, requestId)
         //Make sure the story is successfully and correctly created
-        const receivedBaseStroy = await storiesAccess.getStoryById(storyId)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        const receivedBaseStroy = await storiesAccess.getStoryById(storyId, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
 
         const expectedBaseStory = {
             id: storyId,
@@ -199,12 +207,13 @@ describe('Data Access updateStory', ()=>{
 
         //Update story type
         story.storyType = StoryType.FACETIOUS
-        await storiesAccess.updateStory(story)
-        const updatedBaseStory = await storiesAccess.getStoryById(storyId)
+        await storiesAccess.updateStory(story, requestId)
+        const updatedBaseStory = await storiesAccess.getStoryById(storyId, requestId)
         expect(updatedBaseStory.storyType).toBe(StoryType.FACETIOUS)
 
     })
     it('Should update story title successfully', async()=>{
+        const requestId = uuid.v4()
         const newTitle = 'Updated title'
         const expectedTranslation = {
             id: storyId,
@@ -213,12 +222,13 @@ describe('Data Access updateStory', ()=>{
             storyTitle: newTitle
         }
         story.storyTitle = newTitle
-        await storiesAccess.updateStory(story)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        await storiesAccess.updateStory(story, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
         expect(receivedTranslation).toStrictEqual(expectedTranslation)
     })
 
     it('Should update storyTeller age and gender, story abstraction and transcript, and add tag value', async()=>{
+        const requestId = uuid.v4()
         const storyTitle = 'brand new title'
         const abstraction = 'story abstraction'
         const transcript = 'story transcript'
@@ -260,16 +270,17 @@ describe('Data Access updateStory', ()=>{
             storyTranscript: transcript,
             storyAbstraction: abstraction
         }
-        await storiesAccess.updateStory(story)
-        const receivedBaseStory = await storiesAccess.getStoryById(storyId)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
-        const receivedTags = await storiesAccess.getStoryTagValues(storyId, locale)
+        await storiesAccess.updateStory(story, requestId)
+        const receivedBaseStory = await storiesAccess.getStoryById(storyId, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
+        const receivedTags = await storiesAccess.getStoryTagValues(storyId, locale, requestId)
 
         expect(receivedBaseStory).toStrictEqual(expectedBaseStory)
         expect(receivedTranslation).toStrictEqual(expectedTranslation)
         expect(receivedTags).toStrictEqual(expectedTagValues)
     })
     it('Should update tag value correctly', async()=>{
+        const requestId = uuid.v4()
         const expectedTagValues: TagValue[] = [
             {
                 collectionId: story.collectionId,
@@ -282,15 +293,16 @@ describe('Data Access updateStory', ()=>{
         ]
         story.tags = expectedTagValues
         //Make sure they don't match before update
-        let receivedTags = await storiesAccess.getStoryTagValues(storyId, locale)
+        let receivedTags = await storiesAccess.getStoryTagValues(storyId, locale, requestId)
         expect(receivedTags).not.toStrictEqual(expectedTagValues)
         //Update the story
-        await storiesAccess.updateStory(story)
-        receivedTags = await storiesAccess.getStoryTagValues(storyId, locale)
+        await storiesAccess.updateStory(story, requestId)
+        receivedTags = await storiesAccess.getStoryTagValues(storyId, locale, requestId)
         expect(receivedTags).toStrictEqual(expectedTagValues)
 
     })
     it('Should update storyTellerAge and transcript and remove abstraction and storyTellerGender', async()=>{
+        const requestId = uuid.v4()
         const newTranscript = 'new transcript'
         const newAge = 92
         const expectedBaseStory = {
@@ -313,9 +325,9 @@ describe('Data Access updateStory', ()=>{
         story.storyAbstraction = null
         story.storyTellerGender = null
 
-        await storiesAccess.updateStory(story)
-        const receivedBaseStory = await storiesAccess.getStoryById(storyId)
-        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale)
+        await storiesAccess.updateStory(story, requestId)
+        const receivedBaseStory = await storiesAccess.getStoryById(storyId, requestId)
+        const receivedTranslation = await storiesAccess.getStroyTranslation(storyId, locale, requestId)
 
         expect(receivedBaseStory).toStrictEqual(expectedBaseStory)
         expect(receivedTranslation).toStrictEqual(expectedTranslation)

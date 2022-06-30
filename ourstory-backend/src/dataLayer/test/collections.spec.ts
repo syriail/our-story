@@ -8,9 +8,10 @@ AWSXRay.setContextMissingStrategy("IGNORE_ERROR")
 const collectionsAccess  = new CollectionAccess()
 
 describe('Data Access getCollections by employee', ()=>{
-    it('Should return the base collections whose ids are 1 and 2 since the employee 3 is either manager or editor in them', async ()=>{
-        const employeeId = "3"
+    it('Should return the base collections whose ids are 1 and 2 since the employee 2 is either manager or editor in them', async ()=>{
+        const employeeId = "2"
         const expectedCollections = seededCollections.filter(collection => collection.managerId === employeeId || collection.editors.includes(employeeId))
+        console.log(expectedCollections)
         const baseCollections = await collectionsAccess.getCollections(employeeId)
         expect(baseCollections).toStrictEqual(expectedCollections)
     })

@@ -4,7 +4,7 @@ import {CreateCollectionRequest} from '../../requests/CreateCollectionRequest'
 AWSXRay.setContextMissingStrategy("IGNORE_ERROR")
 
 describe('Business Logic getCollections by employee', ()=>{
-    it('Should return the collections whose ids are 1 and 2 since the employee 3 is either manager or editor in them', async ()=>{
+    it('Should return the collections whose ids are 1 and 2 since the employee 2 is either manager or editor in them', async ()=>{
         const expectedValue = [
             {
                 id:"1",
@@ -59,7 +59,7 @@ describe('Business Logic getCollections by employee', ()=>{
                 availableTranslations:[]
             }
         ]
-        const baseCollections = await getCollectionsByEmployee("3", 'ar')
+        const baseCollections = await getCollectionsByEmployee("2", 'ar')
         expect(baseCollections).toStrictEqual(expectedValue)
     })
     it('Should return empty list', async ()=>{

@@ -21,8 +21,6 @@ class EmployeesAccess{
         const items = response.Responses[this.employeesTable]
         return items as Employee[]
         }catch(error){
-            console.log('Error Call getEmployeesByIds with: ' + ids)
-            console.log(error)
             throw error
         }
         

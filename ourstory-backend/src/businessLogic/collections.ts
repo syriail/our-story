@@ -35,7 +35,6 @@ export const getCollectionsByEmployee = async(userId: string, locale: string): P
         }
         return collections
     }catch(error){
-        console.log(error)
         throw error
     }
     

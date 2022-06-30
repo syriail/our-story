@@ -44,8 +44,6 @@ export class CollectionAccess{
         const response = await this.documentClient.get(params).promise()
         return response.Item
         }catch(error){
-            console.log('Error Call getCollectionTranslation with: ' + collectionId + ',' + locale)
-            console.error(error)
             throw error
         }
         
@@ -129,8 +127,6 @@ export class CollectionAccess{
             const response = await this.documentClient.query(params).promise()
             return parseTags(response.Items)
         }catch(error){
-            console.log('Error Call getCollectionTagsTranslation with: ' + collectionId + ',' + locale)
-            console.error(error)
             throw error
         }
         
