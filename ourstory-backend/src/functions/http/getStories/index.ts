@@ -17,23 +17,39 @@ export default {
     iamRoleStatements:[
         {
             Effect: 'Allow',
-            Action: ['dynamodb:Query'],
+            Action: ['dynamodb:Query', 'dynamodb:GetItem'],
             Resource:{
                 'Fn::GetAtt':['StoriesTable', 'Arn']
             }
         },
         {
             Effect: 'Allow',
-            Action: ['dynamodb:Query'],
+            Action: ['dynamodb:Query', 'dynamodb:GetItem'],
             Resource:{
                 'Fn::GetAtt':['TranslationsTable', 'Arn']
             }
         },
         {
             Effect: 'Allow',
-            Action: ['dynamodb:Query'],
+            Action: ['dynamodb:Query', 'dynamodb:GetItem'],
             Resource:{
                 'Fn::GetAtt':['TagValuesTable', 'Arn']
+            }
+        },
+        {
+            Effect: 'Allow',
+            Action: ['dynamodb:Query'],
+            Resource:{
+                'Fn::Join':[
+                    '/',
+                    [
+                        {
+                            'Fn::GetAtt':['StoriesTable', 'Arn']
+                        },
+                        'index',
+                        '*'
+                    ]
+                ]
             }
         }
     ]

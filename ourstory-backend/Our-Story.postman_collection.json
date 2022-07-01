@@ -10,7 +10,7 @@
 			"name": "Authorized",
 			"item": [
 				{
-					"name": "Get Stories / Collection id = 2",
+					"name": "Get Stories / Collection 2",
 					"event": [
 						{
 							"listen": "test",
@@ -33,14 +33,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/stories/2?locale=en",
-							"protocol": "http",
+							"raw": "{{host}}/stories/929e483b-9fe7-46b1-acca-516a7ab2551f?locale=en",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"stories",
-								"2"
+								"929e483b-9fe7-46b1-acca-516a7ab2551f"
 							],
 							"query": [
 								{
@@ -76,8 +75,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/collections?locale=en",
-							"protocol": "http",
+							"raw": "{{host}}/collections?locale=en",
 							"host": [
 								"{{host}}"
 							],
@@ -128,8 +126,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/collections?locale=en",
-							"protocol": "http",
+							"raw": "{{host}}/collections?locale=en",
 							"host": [
 								"{{host}}"
 							],
@@ -174,14 +171,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/uploadUrl/21?mediaFormat=image&fileExtension=png",
-							"protocol": "http",
+							"raw": "{{host}}/uploadUrl/41935f60-652d-4a4f-b1fe-7eb8db577924?mediaFormat=image&fileExtension=png",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"uploadUrl",
-								"21"
+								"41935f60-652d-4a4f-b1fe-7eb8db577924"
 							],
 							"query": [
 								{
@@ -214,7 +210,7 @@
 									"});",
 									"pm.test(\"Story created with correct collection id\", function () {",
 									"    let story = pm.response.json().story",
-									"    pm.expect(story.collectionId).to.equal(\"3\")",
+									"    pm.expect(story.collectionId).to.equal(\"41935f60-652d-4a4f-b1fe-7eb8db577924\")",
 									"});",
 									"pm.test(\"Story created with correct type\", function () {",
 									"    let story = pm.response.json().story",
@@ -230,7 +226,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"storyTitle\":\"Postman story\",\n    \"collectionId\": \"3\",\n    \"defaultLocale\": \"en\",\n    \"storyType\": \"HISTORY\",\n    \"storyTranscript\": \"The whole story of Postman\"\n}",
+							"raw": "{\n    \"storyTitle\":\"Postman story\",\n    \"collectionId\": \"11107d91-d88c-40eb-a7af-b0774cc30a14\",\n    \"defaultLocale\": \"en\",\n    \"storyType\": \"HISTORY\",\n    \"storyTranscript\": \"The whole story of Postman\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -238,8 +234,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{host}}/stories",
-							"protocol": "http",
+							"raw": "{{host}}/stories",
 							"host": [
 								"{{host}}"
 							],
@@ -259,11 +254,6 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"Story which was updated has the id 21\", function () {",
-									"    let story = pm.response.json().story",
-									"    pm.expect(story.id).to.equal(\"21\")",
 									"});",
 									"",
 									"pm.test(\"Story updated with correct title\", function () {",
@@ -288,7 +278,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"storyTitle\":\"Postman story\",\n    \"collectionId\": \"2\",\n    \"defaultLocale\": \"en\",\n    \"storyType\": \"HISTORY\",\n    \"storyTranscript\": \"The whole story of Postman\"\n}",
+							"raw": "{\n    \"storyTitle\":\"Postman story\",\n    \"collectionId\": \"11107d91-d88c-40eb-a7af-b0774cc30a14\",\n    \"defaultLocale\": \"en\",\n    \"storyType\": \"HISTORY\",\n    \"storyTranscript\": \"The whole story of Postman\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -296,46 +286,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{host}}/stories/21",
-							"protocol": "http",
+							"raw": "{{host}}/story/2ef83f35-e369-4fdc-8a3a-8d4cb3fcc18f",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
-								"stories",
-								"21"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Story",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 204: No Content\", function () {",
-									"    pm.response.to.have.status(204);",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://{{host}}/stories/22",
-							"protocol": "http",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"stories",
-								"22"
+								"story",
+								"2ef83f35-e369-4fdc-8a3a-8d4cb3fcc18f"
 							]
 						}
 					},
@@ -395,8 +352,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/stories/2?locale=en",
-							"protocol": "http",
+							"raw": "{{host}}/stories/2?locale=en",
 							"host": [
 								"{{host}}"
 							],
@@ -433,8 +389,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://{{host}}/stories/2?locale=en",
-							"protocol": "http",
+							"raw": "{{host}}/stories/2?locale=en",
 							"host": [
 								"{{host}}"
 							],
@@ -525,8 +480,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{host}}/collections",
-							"protocol": "http",
+							"raw": "{{host}}/collections",
 							"host": [
 								"{{host}}"
 							],
@@ -570,8 +524,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{host}}/stories",
-							"protocol": "http",
+							"raw": "{{host}}/stories",
 							"host": [
 								"{{host}}"
 							],
@@ -610,13 +563,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://{{host}}/stories/21",
-							"protocol": "http",
+							"raw": "{{host}}/story/21",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
-								"stories",
+								"story",
 								"21"
 							]
 						}
@@ -659,7 +611,7 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "localhost:3000/dev",
+			"value": "http://localhost:3000/dev",
 			"type": "string"
 		},
 		{
@@ -680,12 +632,17 @@
 		},
 		{
 			"key": "employee2Token",
-			"value": "eyJhbGciOiJSUzI1NiIsImVudGl0bGVtZW50IjoiMTkwdWZwbnVoY3h0MGE3c2F2eTR0OSJ9.eyJpc3MiOiJvZmZsaW5lIiwic3ViIjoiMiIsImNvZ25pdG86Z3JvdXBzIjpbIkNPTExFQ1RJT05fTUFOQUdFUiIsIkVESVRPUiJdLCJhdWQiOiJuYXRhbGlhIiwiaWF0IjoxNjU2NDkyNTE2LCJleHAiOjE3NTY0OTMxMTYsImFhYSI6IjV1Z2YydXN4ZjJ4OW8zeWhoMjlibyJ9.btZphyMDSbo-F-UFZkOXSzx09zcfsFIS4U0g-vVS-RVYntm3J6GBSjI5DrDLxeq9Zp1j_G_x7z6P8Bpu3n9P2c-8YBgjZ7hnWv0ngY7JuClCj2EoXLMXSc2JWvJhngNkhSQ0XK9DAiVRwDidNuPG5dU_5puq8A9khppbNGG7pAjV83PUVzMvoc09sfkk3ghzLTNayVXqHhvJQGfzoWs06NVYlVV8FDgDwuxruf5M69dn0cxKOtxgc6dG_y5Wc44-PslhnKzIBHvwxPO1wXm2WbxsYuoSNNn16VvaCf9DmOCA9oAc1sdTRedhvYbDTfV91HKU2ii5cuFb6de2ngIHqA",
+			"value": "eyJhbGciOiJSUzI1NiIsImVudGl0bGVtZW50IjoiMTkwdWZwbnVoY3h0MGE3c2F2eTR0OSJ9.eyJpc3MiOiJvZmZsaW5lIiwic3ViIjoiMiIsImNvZ25pdG86Z3JvdXBzIjpbIkVESVRPUiJdLCJhdWQiOiJuYXRhbGlhIiwiaWF0IjoxNjU2NDkyNTE2LCJleHAiOjE3NTY0OTMxMTYsImFhYSI6IjV1Z2YydXN4ZjJ4OW8zeWhoMjlibyJ9.uBtb01HYwsTVr2cA1q3idxb64QHy-YNc6nKBhPV-yLyicVLbk6-EVFHDYJ6JTwZ8M9BuQ_JHxzQ1Pohhxe7oaCmUIdw91H1gj-QdfZItQMeqmR1rnb5jbFjpDgWqFSkfxMKtt8TXOze56sx9OswG3xE1ESB0Um-1qO4HaPcQNg9-NdtRpPIAq132NBeAGIkRnzRcbODQ-cejw8J2Oe5LfdZRtCaEnBqTqaKOpBFG7rYwUteSiiM32_be_WdSsijrj6CAcsa4Vb-Zc4u6i0AEYKW-CTJaDyVuWeQUjMenb_9qaU3ozGu6ATWHEhU_NDzopjCsI1o0y1REk6w0SeTIEg",
 			"type": "string"
 		},
 		{
 			"key": "employee3Token",
-			"value": "eyJhbGciOiJSUzI1NiIsImVudGl0bGVtZW50IjoiMTkwdWZwbnVoY3h0MGE3c2F2eTR0OSJ9.eyJpc3MiOiJvZmZsaW5lIiwic3ViIjoiMyIsImNvZ25pdG86Z3JvdXBzIjpbIkNPTExFQ1RJT05fTUFOQUdFUiIsIkVESVRPUiJdLCJhdWQiOiJuYXRhbGlhIiwiaWF0IjoxNjU2NDkyNTE2LCJleHAiOjE3NTY0OTMxMTYsImFhYSI6IjV1Z2YydXN4ZjJ4OW8zeWhoMjlibyJ9.GjMi7ZXR22PNcXSCbDmSXKMtX7p64GZnHsRlwHg9G181z_LlRKhEiR13MA7Fyf7XXdSDIoTur4jkioV-JY1_W9iW_pvZFjNR4SJzNtSvExnLiZju7AEMn8GIBuzO-ollsB6lWlBwgHQePZsoyAFvJ7PW2I1660IHdRe7eTalsPCpX8gyRHf1gyb7-2cXfbwmcPcvh2s0Uh-mvb7Xm1GTxXxe8qhaRQ47RxMoe5JnLmlFZEpudXvnY27fkYklwk5gwoNzxz_C2f0HSzxvRn5dXTpPzNS4q3VLo3uH7iS6BGDkHk4wxbTQKVcXtz3jpScguQbxTYYRLv5Awz-lI1P-vA",
+			"value": "eyJhbGciOiJSUzI1NiIsImVudGl0bGVtZW50IjoiMTkwdWZwbnVoY3h0MGE3c2F2eTR0OSJ9.eyJpc3MiOiJvZmZsaW5lIiwic3ViIjoiMyIsImNvZ25pdG86Z3JvdXBzIjpbIkNPTExFQ1RJT05fTUFOQUdFUiJdLCJhdWQiOiJuYXRhbGlhIiwiaWF0IjoxNjU2NDkyNTE2LCJleHAiOjE3NTY0OTMxMTYsImFhYSI6IjV1Z2YydXN4ZjJ4OW8zeWhoMjlibyJ9.l0gnos3jXrYdH1y19Vz-DSjJ_HQpHjHHthnr6OayEAT7RrV8cqdk4m1-jr67oN_WpY__p0wD6l17M5Yhg-qcejte0Jlx1v0h9_X_kgLqvz9xd7gAkimKhpo9FAef9we1GYWqWDYnQOryNMTxAMJP2GI4edhrJhUsab2XLq3LzqjmtJvv5WZ8JDYhD9So9RgjVIQhPNEmMm0jssFe2VI8g5nnfsBF2a_9KymSO5GKdRcDd93sNu5GT1DEeOFqTwkQ-zZDDS4EAEvN-ZHU3jhPTWsa6ZrGtQzrlgfRoaUf4n_3wDCv_SXvJCzrtwuvKtDaAxcyXicCcZBLpCgwpbNkRQ",
+			"type": "string"
+		},
+		{
+			"key": "employee1Token",
+			"value": "eyJhbGciOiJSUzI1NiIsImVudGl0bGVtZW50IjoiMTkwdWZwbnVoY3h0MGE3c2F2eTR0OSJ9.eyJpc3MiOiJvZmZsaW5lIiwic3ViIjoiMSIsImNvZ25pdG86Z3JvdXBzIjpbIkFETUlOIiwiQ09MTEVDVElPTl9NQU5BR0VSIiwiRURJVE9SIl0sImF1ZCI6Im5hdGFsaWEiLCJpYXQiOjE2NTY0OTI1MTYsImV4cCI6MTc1NjQ5MzExNiwiYWFhIjoiNXVnZjJ1c3hmMng5bzN5aGgyOWJvIn0.ip8uEyb-xaeDn6Ktw8Ol1BSPYKzDZEdzoSzsCS7y939eo9T_FPTbb-ELW4uTX9WwjHl0IEW5q_2wbJDFrAS1qZkt0xhIjOrrinHh4LOxq4mVuP1QVCAW1lMEyuMNjJ0CyXxg3GidsY154HSx8cXlApwbYlp86Yh8btrh6M08PQpYPjZ9plrcfJ2OSw4hY-oXx0yRGUYDXuSOkNJ3mPDbRl9os0__Oym-1Fd9NhDkmFNBzYQyUQdUZ2qzUllpipbf91nOk-8KcwDpv_CzlnJsGBvPyMkr_lHsG9YOXwLhY9V_2m5FgdQkyUjyy7ute55-rvLdIHUm8y5CDpMaDUC5Qg",
 			"type": "string"
 		}
 	]

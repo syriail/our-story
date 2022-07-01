@@ -51,7 +51,8 @@ const serverlessConfiguration: AWS = {
       TRANSLATIONS_TABLE: '${self:custom.tables.translationsTable}',
       TAG_VALUES_TABLE: '${self:custom.tables.tagValuesTable}',
       TRANSLATION_BY_TYPE_INDEX: '${self:custom.tables.translationsByTypeIndex}',
-      STORIES_BY_COLLECTION_INDEX: '${self:custom.tables.storiesByCollectionIndex}'
+      STORIES_BY_COLLECTION_INDEX: '${self:custom.tables.storiesByCollectionIndex}',
+      DEPLOYMENT: '${self:provider.stage}'
       
     },
     iam:{

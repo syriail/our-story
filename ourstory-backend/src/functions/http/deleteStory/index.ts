@@ -7,7 +7,7 @@ export default {
         {
             http:{
                 method: 'DELETE',
-                path: 'stories/{storyId}',
+                path: 'story/{storyId}',
                 authorizer: 'authorize',
                 cors: true
             }

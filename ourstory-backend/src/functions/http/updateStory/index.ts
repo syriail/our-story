@@ -8,7 +8,7 @@ export default {
         {
             http:{
                 method: 'PATCH',
-                path: 'stories/{storyId}',
+                path: 'story/{storyId}',
                 authorizer: 'authorize',
                 cors: true,
                 request:{
@@ -23,21 +23,21 @@ export default {
     iamRoleStatements:[
         {
             Effect: 'Allow',
-            Action: ['dynamodb:UpdateItem'],
+            Action: ['dynamodb:UpdateItem', 'dynamodb:GetItem', 'dynamodb:Query'],
             Resource:{
                 'Fn::GetAtt':['StoriesTable', 'Arn']
             }
         },
         {
             Effect: 'Allow',
-            Action: ['dynamodb:UpdateItem'],
+            Action: ['dynamodb:UpdateItem', 'dynamodb:GetItem', 'dynamodb:Query'],
             Resource:{
                 'Fn::GetAtt':['TranslationsTable', 'Arn']
             }
         },
         {
             Effect: 'Allow',
-            Action: ['dynamodb:PutItem'],
+            Action: ['dynamodb:PutItem', 'dynamodb:Query'],
             Resource:{
                 'Fn::GetAtt':['TagValuesTable', 'Arn']
             }

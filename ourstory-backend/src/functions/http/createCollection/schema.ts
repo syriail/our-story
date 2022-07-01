@@ -1,4 +1,16 @@
 export default{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    definitions:{
+        tag:{
+            type: 'object',
+            properties:{
+                slug:{type: 'string', minLength: 1},
+                name:{type: 'string', minLength: 1}
+            },
+            required: ['slug', 'name']
+        }
+
+    },
     type: 'object',
     properties:{
         name: {type: 'string', minLength: 1,},
@@ -13,20 +25,10 @@ export default{
         tags:{
             type: 'array',
             items:{
-                type: '#/$defs/tag'
+                $ref: '#/definitions/tag'
             }
         }
     },
-    required: ['name', 'defaultLocale'],
-    $defs:{
-        tag:{
-            type: 'object',
-            properties:{
-                slug:{type: 'string', minLenght: 1},
-                name:{type: 'string', minLenght: 1}
-            },
-            required: ['slug', 'name']
-        }
-
-    }
+    required: ['name', 'defaultLocale']
+    
 } as const

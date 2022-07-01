@@ -7,20 +7,23 @@ import { createLogger } from '../../../libs/logger'
 import Axios from 'axios'
 import { Jwt, JwtPayload, Issuer, UserGroup } from '../../../auth/Jwt'
 import { getIssuer, getUserGroup, certToPEM } from '../../../auth/utils'
+import * as uuid from 'uuid'
 
-const logger = createLogger('auth')
+
 
 //This map is used to cache the x509 certificate chain for each key,
 //so we don't need to fetch JWKS every time.
 const keysCertMap: Map<string, string> = new Map()
 
 const authorizeHandler: APIGatewayAuthorizerHandler = async(event: APIGatewayTokenAuthorizerEvent): Promise<APIGatewayAuthorizerResult> =>{
-  
-    logger.info('Authorizing a user', {message: JSON.stringify(event.authorizationToken)})
+  const requestId = uuid.v4()
+  const logger = createLogger(requestId, 'Handler', 'authorizeHandler')
+    logger.info('Authorizing a user')
   try {
-    const tokenPayload = await verifyToken(event.authorizationToken)
-    logger.info('User was authorized', tokenPayload)
+    const tokenPayload = await verifyToken(event.authorizationToken, requestId)
+    logger.info('User was authorized', {message: tokenPayload})
     const userGroup: UserGroup = getUserGroup(tokenPayload)
+    logger.info(`User has the role: ${userGroup}`)
     switch(userGroup){
       case UserGroup.ADMIN:
         return {
@@ -49,7 +52,8 @@ const authorizeHandler: APIGatewayAuthorizerHandler = async(event: APIGatewayTok
                   'arn:aws:execute-api:*:*:*/*/*/collections',
                   'arn:aws:execute-api:*:*:*/*/*/collections/*',
                   'arn:aws:execute-api:*:*:*/*/*/stories',
-                  'arn:aws:execute-api:*:*:*/*/*/stories/*'
+                  'arn:aws:execute-api:*:*:*/*/*/stories/*',
+                  'arn:aws:execute-api:*:*:*/*/*/story/*'
                 ]
               }
             ]
@@ -67,7 +71,8 @@ const authorizeHandler: APIGatewayAuthorizerHandler = async(event: APIGatewayTok
                 Resource: [
                   'arn:aws:execute-api:*:*:*/*/GET/collections',
                   'arn:aws:execute-api:*:*:*/*/*/stories',
-                  'arn:aws:execute-api:*:*:*/*/*/stories/*'
+                  'arn:aws:execute-api:*:*:*/*/*/stories/*',
+                  'arn:aws:execute-api:*:*:*/*/*/story/*'
                 ]
               }
             ]
@@ -112,11 +117,12 @@ const authorizeHandler: APIGatewayAuthorizerHandler = async(event: APIGatewayTok
     
 }
 
-const verifyToken = async(authHeader: string): Promise<JwtPayload> =>{
+const verifyToken = async(authHeader: string, requestId: string): Promise<JwtPayload> =>{
+  const logger = createLogger(requestId, 'Handler', 'verifyToken')
     const token = getToken(authHeader)
     const jwt: Jwt = decode(token, { complete: true }) as Jwt
     const kid = jwt.header.kid
-    if(process.env.IS_OFFLINE){
+    if(process.env.IS_OFFLINE || process.env.DEPLOYMENT === 'dev'){
       return jwt.payload
     }else{
       if(!kid){
@@ -139,7 +145,7 @@ const verifyToken = async(authHeader: string): Promise<JwtPayload> =>{
           throw new createError.Unauthorized()
       }
       
-      const cert = await getCertificate(kid, jwksUrl)
+      const cert = await getCertificate(kid, jwksUrl, requestId)
       return verify(token, cert, {algorithms: ['RS256']}) as JwtPayload
     } 
     
@@ -156,7 +162,8 @@ const verifyToken = async(authHeader: string): Promise<JwtPayload> =>{
   
     return token
   }
-const getCertificate = async(kid:string, jwksUrl: string): Promise<string>=>{
+const getCertificate = async(kid:string, jwksUrl: string, requestId): Promise<string>=>{
+  const logger = createLogger(requestId, 'Handler', 'getCertificate')
   //If the kid already exists, then return it from cache
   const cachedCert = keysCertMap.get(kid)
   if(cachedCert) {

@@ -124,7 +124,7 @@ export class StoryAccess{
                 Item: translation
             }
         }
-
+        logger.info(JSON.stringify(putTranslation))
         transactItems.push(putTranslation)
         //Add tag value for each tag
         for(const tag of story.tags){

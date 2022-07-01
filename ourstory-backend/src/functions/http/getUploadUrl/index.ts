@@ -15,5 +15,23 @@ export default{
                 cors: true
             }
         }
+    ],
+    iamRoleStatementsInherit: true,
+    iamRoleStatements:[
+        {
+            Effect: 'Allow',
+            Action: ['s3:PutObject'],
+            Resource:{
+                'Fn::Join':[
+                    '/',
+                    [
+                        {
+                            'Fn::GetAtt':['MediaBucket', 'Arn']
+                        },
+                        '*'
+                    ]
+                ]
+            }
+        }
     ]
 }

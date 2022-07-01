@@ -3,6 +3,7 @@ import { Collection, Employee } from "../models";
 import EmployeesAccess from "../dataLayer/employeesAccess";
 import * as uuid from 'uuid'
 import { CreateCollectionRequest } from "src/requests/CreateCollectionRequest";
+import {createLogger} from '../libs/logger'
 const collectionAccess = new CollectionAccess()
 const employeesAccess = new EmployeesAccess()
 
@@ -64,7 +65,8 @@ export const getCollectionDetails = async(collectionId: string, locale: string):
 
 }
 
-export const createCollection = async(request: CreateCollectionRequest, userId: string):Promise<Collection> =>{
+export const createCollection = async(request: CreateCollectionRequest, userId: string, requestId: string):Promise<Collection> =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'createCollection')
     const id = uuid.v4()
     const createdAt = new Date().toISOString()
     const editors: Employee[] = await employeesAccess.getEmployeesByIds(request.editors)
@@ -79,8 +81,10 @@ export const createCollection = async(request: CreateCollectionRequest, userId: 
         name: request.name,
         editors
     }
+    logger.info('Create Collection: ', {message: collection})
     if(request.description) collection.description = request.description
-    await collectionAccess.createCollection(collection)
+    await collectionAccess.createCollection(collection, requestId)
+    logger.info('Return the created collection')
     return collection
     
     

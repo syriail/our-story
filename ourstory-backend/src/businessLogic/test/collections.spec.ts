@@ -7,9 +7,8 @@ describe('Business Logic getCollections by employee', ()=>{
     it('Should return the collections whose ids are 1 and 2 since the employee 2 is either manager or editor in them', async ()=>{
         const expectedValue = [
             {
-                id:"1",
-                name: 'Project 1 name in arabic',
-                description: 'Project 1 description in arabic',
+                id:"70a17da6-5610-4cee-8c68-52d0d1bceba6",
+                name: 'Collection 1',
                 manager:{
                     "id": "3",
                     "firstName": "Sarah",
@@ -29,8 +28,8 @@ describe('Business Logic getCollections by employee', ()=>{
                 availableTranslations:[]
             },
             {
-                id:"2",
-                name: 'Project 2 name in english',
+                id:"929e483b-9fe7-46b1-acca-516a7ab2551f",
+                name: 'Collection 2',
                 manager:{
                     "id": "1",
                     "firstName": "Hussein",
@@ -71,8 +70,8 @@ describe('Business Logic getCollections by employee', ()=>{
 describe('Business Logic getCollectionDetails', ()=>{
     it('Should fetch the correct collection details', async()=>{
         const expectedCollection = {
-            id:"2",
-            name: 'Project 2 name in english',
+            id:"929e483b-9fe7-46b1-acca-516a7ab2551f",
+            name: 'Collection 2',
             manager:{
                 "id": "1",
                 "firstName": "Hussein",
@@ -106,7 +105,7 @@ describe('Business Logic getCollectionDetails', ()=>{
                 }
             ]
         }
-        const receivedCollection = await getCollectionDetails('2', 'en')
+        const receivedCollection = await getCollectionDetails('929e483b-9fe7-46b1-acca-516a7ab2551f', 'en')
         expect(receivedCollection).toStrictEqual(expectedCollection)
     })
 })
@@ -123,7 +122,7 @@ describe('Business Logic createCollection', ()=>{
                 }
             ],
         }
-        const createdCollection = await createCollection(request, '1')
+        const createdCollection = await createCollection(request, '1', '123')
         const receivedCollection = await getCollectionDetails(createdCollection.id, 'en')
         expect(receivedCollection).toStrictEqual(createdCollection)
     })

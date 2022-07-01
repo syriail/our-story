@@ -79,7 +79,7 @@ export const createStory = async(request: CreateStoryRequest, requestId: string)
     const logger = createLogger(requestId, 'businessLogic', 'createStory')
     const id = uuid.v4()
     logger.info('Build tag values')
-    const story = await buildStoryFromRequest(id, request)
+    const story = await buildStoryFromRequest(id, request, requestId)
     logger.info('Create the story in DB')
     await storyAccess.createStory(story, requestId)
     return story
@@ -88,7 +88,7 @@ export const createStory = async(request: CreateStoryRequest, requestId: string)
 export const updateStory = async(storyId: string, request: CreateStoryRequest, requestId: string): Promise<Story> =>{
     const logger = createLogger(requestId, 'BusinessLogic', 'updateStory')
     logger.info(`Update story ${storyId}`)
-    const story = await buildStoryFromRequest(storyId, request)
+    const story = await buildStoryFromRequest(storyId, request, requestId)
     await storyAccess.updateStory(story, requestId)
     return getStoryDetails(storyId, story.defaultLocale, requestId)
 
@@ -100,10 +100,12 @@ export const deleteStory = async(storyId: string, requestId: string) =>{
     await storyAccess.deleteStory(storyId, requestId)
 }
 
-const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest): Promise<Story> =>{
+const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest, requestId: string): Promise<Story> =>{
+    const logger = createLogger(requestId, 'BusinessLogic', 'buildStoryFromRequest')
     let tags: TagValue[] = []
     if(request.tags){
         for(const tag  of request.tags){
+            logger.info(`Get tag translation: ${request.collectionId}#${tag.slug} in ${request.defaultLocale}`)
             const tagTranslation = await collectionAccess.getTagTranslation(request.collectionId, tag.slug, request.defaultLocale)
             tags.push({
                 storyId,

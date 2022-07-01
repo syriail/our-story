@@ -12,5 +12,29 @@ export default {
 
             }
         }
+    ],
+    iamRoleStatementsInherit: true,
+    iamRoleStatements:[
+        {
+            Effect: 'Allow',
+            Action: ['dynamodb:Scan'],
+            Resource:{
+                'Fn::GetAtt':['CollectionsTable', 'Arn']
+            }
+        },
+        {
+            Effect: 'Allow',
+            Action: ['dynamodb:GetItem', 'dynamodb:Query'],
+            Resource:{
+                'Fn::GetAtt':['TranslationsTable', 'Arn']
+            }
+        },
+        {
+            Effect: 'Allow',
+            Action: ['dynamodb:GetItem', 'dynamodb:BatchGetItem'],
+            Resource:{
+                'Fn::GetAtt':['EmployeesTable', 'Arn']
+            }
+        }
     ]
 }

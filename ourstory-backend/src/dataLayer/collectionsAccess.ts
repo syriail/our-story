@@ -1,5 +1,6 @@
 import { Collection, TranslableType, Tag } from '../models'
 import {createDynamodbClient} from './dynamodb-infrastructure'
+import {createLogger} from '../libs/logger'
 
 
 
@@ -50,7 +51,8 @@ export class CollectionAccess{
         
     }
 
-    async createCollection(collection: Collection){
+    async createCollection(collection: Collection, requestId: string){
+        const logger = createLogger(requestId, 'Data Access', 'createCollection')
         const slugs = collection.tags? collection.tags.map(tag=> tag.slug) : []
         const editorsIds = collection.editors.map(editor => editor.id)
         let transactItems: AWS.DynamoDB.DocumentClient.TransactWriteItemList = []
@@ -105,8 +107,11 @@ export class CollectionAccess{
             TransactItems: transactItems
         }
         try{
+            logger.info('Create collection transaction begins')
             await this.documentClient.transactWrite(transation).promise()
+            logger.info('Create collection transation successfully finished')
         }catch(error){
+            logger.error(error)
             throw error
         }
         
