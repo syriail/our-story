@@ -146,7 +146,7 @@ To test the backend and make sure it meets the requirements, please do the follo
 - In a seperate terminal run `sls dynamodb start`. This will start local dynamodb and seed the initial data
 - In current terminal run `npm test`
 
-### Integration Test
+### Integration Test Offline and Online
 
 The folder ourstory-backend contains Postman collection named `Our-Story.postman_collection.json`.
 This collection contains all sort of required tests
@@ -159,12 +159,23 @@ This collection contains all sort of required tests
 
 The collection contains many tokens to test with different user id, different user's role and finally to test marlformed token.
 
-To run Postman collection:
+#### Test Offline
+
+To run Postman collection offline:
 
 - In terminal `cd ourstory-backend`
 - Run `sls offline start`. This will start dynamodb local, seed the initial data in the tables, start S3 local service and create the required bucket, and start the server
 - Import the collection in postman
+- Set the variable {{host}} = http://localhost:3000/dev in Postman
 - Run tests in at the collection level or Run each request individually
+
+#### Test Online
+
+- Import the collection in postman
+- Set the variable {{host}} = https://3c6itjpmv1.execute-api.eu-west-1.amazonaws.com/dev in Postman
+- Run tests in at the collection level or Run each request individually
+
+#### Test Online
 
 > The following sections are intended to be a full documentation of the system.
 
