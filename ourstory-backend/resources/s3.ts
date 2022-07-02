@@ -16,6 +16,28 @@ const S3Resources: AWS['resources']['Resources']={
                 ]
             }
         }
+    },
+    AttachementsBucketPolicy:{
+        Type: 'AWS::S3::BucketPolicy',
+        Properties:{
+          Bucket: {
+              Ref: 'MediaBucket'
+          },
+            PolicyDocument:{
+                Version: '2012-10-17',
+                Statement:[
+                    {
+                        Effect: "Allow",
+                        Principal: "*",
+                        Action: "s3:GetObject",
+                        Resource: {
+                            'Fn::Join':['/', [{'Fn::GetAtt':['MediaBucket', 'Arn']}, "*"]]
+                        }
+                    }
+                ]
+            }
+            
+        }
     }
     
 }

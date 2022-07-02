@@ -134,7 +134,7 @@ const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest,
  *
  * @returns singned url as string and the path in the bucket
  */
- export const getUploadUrls = (storyId: string, mediaFromat: MediaFormat, fileExtension: string, requestId: string): UploadAttachmentData=>{
+ export const getUploadUrls = async(storyId: string, mediaFromat: MediaFormat, fileExtension: string, requestId: string): Promise<UploadAttachmentData>=>{
     const logger = createLogger(requestId, 'BusinessLogic', 'getUploadUrls')
     
     const randomNumber = Math.floor(Math.random() * 100);
@@ -152,6 +152,8 @@ const buildStoryFromRequest = async(storyId:string, request: CreateStoryRequest,
     }
     logger.info(`Get upload url of key: ${key}`)
     const urls: UploadAttachmentData = bucketAcess.getMediaUploadUrls(key)
+    //TODO remove this after review. And remove async from function definition
+    await storyAccess.addMediaToStory(storyId,urls.attachmentUrl, mediaFromat)
 
     return urls
 }

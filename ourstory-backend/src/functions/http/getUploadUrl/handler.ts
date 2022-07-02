@@ -15,7 +15,7 @@ const getUploadUrlHandler: APIGatewayProxyHandler = async(event: APIGatewayProxy
     const fileExtension = event.queryStringParameters.fileExtension
     const logger = createLogger(requestId, 'handler', 'getUploadUrlHandler')
     logger.info(`Get story upload url: ${storyId}`)
-    const urls = getUploadUrls(storyId, MediaFormat[mediaFormat.toUpperCase()], fileExtension, requestId)
+    const urls = await getUploadUrls(storyId, MediaFormat[mediaFormat.toUpperCase()], fileExtension, requestId)
     return {
       statusCode: 200,
       body: JSON.stringify(urls)

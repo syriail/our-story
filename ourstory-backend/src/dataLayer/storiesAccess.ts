@@ -1,5 +1,5 @@
 import {createDynamodbClient} from './dynamodb-infrastructure'
-import {Story, TagValue, TranslableType} from '../models'
+import {MediaFormat, Story, TagValue, TranslableType} from '../models'
 import { createLogger } from '../libs/logger'
 export class StoryAccess{
     constructor(
@@ -336,5 +336,24 @@ export class StoryAccess{
             throw error
         }
 
+    }
+
+    async addMediaToStory(storyId: string, path: string, format: MediaFormat){
+        const fileToAdd = [{
+            mediaPath: path,
+            format
+        }]
+        //TODO chenge the exprestion to SET mediaFile = list_append(mediaFiles, :mediaFile)
+        const params: AWS.DynamoDB.DocumentClient.UpdateItemInput = {
+            TableName: this.storiesTable,
+            Key:{
+                id: storyId
+            },
+            UpdateExpression: 'SET mediaFiles = :mediaFile',
+            ExpressionAttributeValues:{
+                ':mediaFile': fileToAdd
+            }
+        }
+        await this.documentClient.update(params).promise()
     }
 }

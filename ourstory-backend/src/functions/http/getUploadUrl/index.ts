@@ -32,6 +32,13 @@ export default{
                     ]
                 ]
             }
+        },
+        {
+            Effect: 'Allow',
+            Action: ['dynamodb:UpdateItem'],
+            Resource:{
+                'Fn::GetAtt':['StoriesTable', 'Arn']
+            }
         }
     ]
 }
